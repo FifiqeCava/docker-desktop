@@ -3,20 +3,23 @@ FROM ubuntu:latest
 
 # Install necessary packages
 RUN apt-get update && \
-    apt-get install -y \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y \
     firefox \
     x11vnc \
     xvfb \
     novnc \
     websockify \
-    wget \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 # Set up environment variables
 ENV DISPLAY=:1 \
     VNC_PORT=5900 \
-    NO_VNC_PORT=6080
+    NO_VNC_PORT=6080 \
+    TZ=UTC
+
+# Set timezone
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # Download noVNC
 RUN mkdir -p /opt/novnc \
